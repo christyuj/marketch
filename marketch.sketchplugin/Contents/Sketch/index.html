@@ -1237,7 +1237,12 @@ Marketch.prototype = {
       style.push(this.getFMFontStyle(fontFamily,fontSize))
       style.push(this.getFMColorStyle(color))
       style.push(this.getFMColorStyle(background))
-      return style.join("");
+      var fmstyleString = style.join("");
+      if(fmstyleString != ""){
+         fmstyleString = fmstyleString + "\r\n";
+      }
+
+      return fmstyleString;
   },
   getFMFontStyle: function(fontFamily, fontSize) {
       var fontFamilyTag;
@@ -1247,6 +1252,7 @@ Marketch.prototype = {
               fontFamilyTag = "R";
               break;
           case "PingFangSC-Bold":
+          case "PingFangSC-Medium":
               fontFamilyTag = "B";
               break;
           default:
