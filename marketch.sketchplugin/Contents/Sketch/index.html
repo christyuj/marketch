@@ -1007,7 +1007,7 @@ Marketch.prototype = {
         '<dl class="pa-block">',
           '<dt><span>', this.I18N['CODE'] ,'</span><em>', this.I18N['COPYSUCCESS'] ,'</em></dt>',
           '<dd>',
-            '<textarea name="code">', this.formatStyle(layerData.style) ,'</textarea>',
+            '<textarea name="code">', this.formatFMStyle(layerData.style),this.formatStyle(layerData.style) ,'</textarea>',
           '</dd>',
         '</dl>'
       )
@@ -1228,7 +1228,123 @@ Marketch.prototype = {
 
     return scales[this.unit.unit];
   },
+  formatFMStyle: function(styleJson){
+      var style = [];
+      var fontFamily = styleJson["font-family"];
+      var fontSize = styleJson["font-size"];
+      var background = styleJson["background"];
+      var color = styleJson["color"]
+      style.push(this.getFMFontStyle(fontFamily,fontSize))
+      style.push(this.getFMColorStyle(color))
+      style.push(this.getFMColorStyle(background))
+      return style.join("");
+  },
+  getFMFontStyle: function(fontFamily, fontSize) {
+      var fontFamilyTag;
+      var fontSizeTag;
+      switch (fontFamily){
+          case "PingFangSC-Regular":
+              fontFamilyTag = "R";
+              break;
+          case "PingFangSC-Bold":
+              fontFamilyTag = "B";
+              break;
+          default:
+              fontFamilyTag = "";
+      }
 
+      switch (fontSize){
+          case "20px":
+              fontSizeTag = "0";
+              break;
+          case "24px":
+              fontSizeTag = "1";
+              break;
+          case "28px":
+              fontSizeTag = "2";
+              break;
+          case "32px":
+              fontSizeTag = "3";
+              break;
+          case "36px":
+              fontSizeTag = "4";
+              break;
+          case "48px":
+              fontSizeTag = "5";
+              break;
+          case "56px":
+              fontSizeTag = "6";
+              break;
+          default:
+              fontSizeTag = "";
+      }
+
+      if(fontFamilyTag!=""&&fontSizeTag!=""){
+          return  "FMFontStyle:" + "T"+ fontSizeTag + fontFamilyTag + "\r\n";
+      }else {
+          return "";
+      }
+  },
+
+  getFMColorStyle: function(color) {
+      var colorTag;
+      let upperCaseColor = color?color.toUpperCase():"";
+
+      switch (upperCaseColor){
+          case "#000000":
+              colorTag = "CK0";
+              break;
+          case "#FFFFFF":
+              colorTag = "CW0";
+              break;
+          case "#F5F5F5":
+              colorTag = "CW1";
+              break;
+          case "#333333":
+              colorTag = "CG0";
+              break;
+          case "#999999":
+              colorTag = "CG1";
+              break;
+          case "#CCCCCC":
+              colorTag = "CW2";
+              break;
+          case "#E5E5E5":
+              colorTag = "CG3";
+              break;
+          case "#F3F5F9":
+              colorTag = "CG4";
+              break;
+          case "#FFDA44":
+              colorTag = "CY0";
+              break;
+          case "#EAC632":
+              colorTag = "CY1";
+              break;
+          case "#FF4444":
+              colorTag = "CR0";
+              break;
+          case "#38ADFF":
+              colorTag = "CB0";
+              break;
+          case "#0C85FE":
+              colorTag = "CB1";
+              break;
+          case "#992929":
+              colorTag = "CR1";
+              break;
+          case "#998329":
+              colorTag = "CY2";
+              break;
+          default:
+              colorTag = "";
+      }
+      if(colorTag != ""){
+          return "FMColorStyle:" + colorTag + "\r\n";
+      }else {
+          return "";
+      }
+  },
   /*
    * 显示标记T表示当前鼠标over的图层，S表示选中的图层
    * 标尺总是由target指向selected
