@@ -1253,6 +1253,7 @@ Marketch.prototype = {
       var keywordValue = styleJson[keyword];
       if(keywordValue){
         keywordValue = keywordValue.replace(".","");
+        keywordValue = keywordValue.replace(/[-]/g,"");
       }
       return keywordValue;
   },
@@ -1262,11 +1263,11 @@ Marketch.prototype = {
       var fontSizeTag;
 
       switch (fontFamily){
-          case "PingFangSC-Regular":
+          case "PingFangSCRegular":
               fontFamilyTag = "R";
               break;
-          case "PingFangSC-Bold":
-          case "PingFangSC-Medium":
+          case "PingFangSCBold":
+          case "PingFangSCMedium":
               fontFamilyTag = "B";
               break;
           default:
