@@ -1230,13 +1230,17 @@ Marketch.prototype = {
   },
   formatFMStyle: function(styleJson){
       var style = [];
-      var fontFamily = styleJson["font-family"];
-      var fontSize = styleJson["font-size"];
-      var background = styleJson["background"];
-      var color = styleJson["color"]
+      var fontFamily = this.getValueFromStyleJson(styleJson,"font-family");
+      var fontSize = this.getValueFromStyleJson(styleJson,"font-size");
+      var background = this.getValueFromStyleJson(styleJson,"background");
+      var color = this.getValueFromStyleJson(styleJson,"color");
+      var border = this.getValueFromStyleJson(styleJson, "border");
+      var width = this.getValueFromStyleJson(styleJson,"width");
+      var height = this.getValueFromStyleJson(styleJson, "height");
       style.push(this.getFMFontStyle(fontFamily,fontSize))
       style.push(this.getFMColorStyle(color))
       style.push(this.getFMColorStyle(background))
+      style.push(this.getFMLineStyle(border,width,height));
       var fmstyleString = style.join("");
       if(fmstyleString != ""){
          fmstyleString = fmstyleString + "\r\n";
@@ -1244,9 +1248,19 @@ Marketch.prototype = {
 
       return fmstyleString;
   },
+
+  getValueFromStyleJson: function (styleJson, keyword) {
+      var keywordValue = styleJson[keyword];
+      if(keywordValue){
+        keywordValue = keywordValue.replace(".","");
+      }
+      return keywordValue;
+  },
+
   getFMFontStyle: function(fontFamily, fontSize) {
       var fontFamilyTag;
       var fontSizeTag;
+
       switch (fontFamily){
           case "PingFangSC-Regular":
               fontFamilyTag = "R";
@@ -1350,6 +1364,38 @@ Marketch.prototype = {
       }else {
           return "";
       }
+  },
+
+  getFMLineStyle: function (border, width, height) {
+      if (width!="1px"&&height!="1px") {
+          return "";
+      }
+      var lineStyle = "";
+      var borderArray = border.split(" ")
+      var pattern = /^#[0-9a-fA-F]{6}$/;
+      borderArray.map(function(value,index){
+          var matched= value.match(pattern);
+          if (matched){
+            switch (value.toUpperCase()){
+              case "#FFFFFF":
+                lineStyle = "L0";
+                break;
+              case "#E7E7E7":
+                lineStyle = "L1";
+                break;
+              case "#E5E5E5":
+                lineStyle = "L2";
+                break;
+              case "#CCCCCC":
+                lineStyle = "L3";
+                break;
+              case "#333333":
+                lineStyle = "L4";
+                break;
+            }
+          }
+      });
+      return "FMLineStyle:" + lineStyle + "\r\n";
   },
   /*
    * 显示标记T表示当前鼠标over的图层，S表示选中的图层
